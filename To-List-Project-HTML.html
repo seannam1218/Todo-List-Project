@@ -32,6 +32,11 @@
 		margin-top: 5%;
 	
 	}
+	.form {
+		color: #FF8000;
+		font-size: 0.5em;
+	}
+	
 	</style>
 	
 </head>
@@ -55,23 +60,69 @@
 		</ul>
 	</div>
 
-	<p>
-	</p>
 	
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>
         //when user clicks + button next to each li, a form block appears where they can add a new sub-goal. 
 		//when user clicks - button next to each li, that li item is erased.
-		var icon = $("<img>")
+		var addIcon = $("<img>")
 			.attr("src", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png")
 			.attr("alt", "add")
+			.attr("width", "30px")
+			.on("click", function(event) {
+				console.log("wow");
+				form.appendTo("body");
+				});
+			
+		var deleteIcon = $("<img>")
+			.attr("src", "http://image.flaticon.com/icons/png/128/61/61391.png")
+			.attr("alt", "delete")
 			.attr("width", "30px");
 		
+		//form construction
+		var button = $("<button>").attr("type", "submit");
+		var input = $("<input>").attr("type", "string").attr("name", "todo");
+		var label = $("<label>").append("Add an item <br>").append(input);
+		var form = $("<form>").attr("class", "form").append(label).append(button).on("submit", function(event) {
+			event.preventDefault();
+			var answer = $(this).find("input").val();
+			
+			console.log("input: " + answer);
+			
+			var blankItem = $("<li>")
+			blankItem.text(answer);
+			blankItem.appendTo(".lists");
+				
+			console.log("submission process complete");
+		});
+		
+		/*
 		var totalCount = $("li").length;
 		console.log(totalCount);
 		for (var i = 0; i < totalCount; i++) {
 			$("li").append(icon);
 		}
+		*/
+		
+		//var icon appear beside list item 
+		//var icon responds to click -> produces a form
+		//saves .lists to localStorage
+		//
+		
+		//icon= image tag containing img
+		//place= any tag 
+		/*var drawIcon = function (icon place) {
+			icon.appendTo(place);
+		}*/
+		
+		//drawIcon(addIcon, ".lists");
+		
+		addIcon.appendTo("li, body");
+		deleteIcon.appendTo("li, body");
+		//form.appendTo(".lists");
+		
+		
+		//console.log($("li > .listLevel2"));
 		
     </script>
 	
