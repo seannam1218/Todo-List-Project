@@ -6,6 +6,10 @@
 	<meta charset="utf-8">
 	
 	<style>
+	body {
+	background-color: #FAECA9
+	}
+	
 	.topBar {
 		font-family: sans-serif;
 		font-size: 1em;
@@ -21,9 +25,9 @@
 	}
 	.lists {
 		font-family: sans-serif;
-		font-size: 1em;
+		font-size: 2em;
 		top: 5%;
-		margin-left: 15%;
+		margin-left: 10%;
 		margin-right: 20%;
 		margin-top: 5%;
 	
@@ -39,15 +43,37 @@
 	</div>
 	
 	<div class= lists>
-		<ul> 
-			<li>I'm slim shady yes I'm the real shady all you other slim shadies are just immitating so won't the real slim shady please stand up. Please
-			stand up. Please stand up.</li>
-			<li>2</li>
+		<ul class= listLevel1> 
+			<li>Job
+			<ul class= listLevel2>
+				<li> get a job </li>
+				<li> update resume</li>
+			</ul>
+			</li>
+			<li>Education</li>
+			<li>Computer Science</li>
 		</ul>
 	</div>
 
+	<p>
+	</p>
 	
-	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        //when user clicks + button next to each li, a form block appears where they can add a new sub-goal. 
+		//when user clicks - button next to each li, that li item is erased.
+		var icon = $("<img>")
+			.attr("src", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png")
+			.attr("alt", "add")
+			.attr("width", "30px");
+		
+		var totalCount = $("li").length;
+		console.log(totalCount);
+		for (var i = 0; i < totalCount; i++) {
+			$("li").append(icon);
+		}
+		
+    </script>
 	
 </body>
 
