@@ -61,7 +61,7 @@
 	</div>
 
 	
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>
         //when user clicks + button next to each li, a form block appears where they can add a new sub-goal. 
 		//when user clicks - button next to each li, that li item is erased.
@@ -71,9 +71,9 @@
 			.attr("width", "30px")
 			.on("click", function(event) {
 				console.log("wow");
-				form.appendTo("body");
+				form.appendTo(".lists");
 				});
-			
+				
 		var deleteIcon = $("<img>")
 			.attr("src", "http://image.flaticon.com/icons/png/128/61/61391.png")
 			.attr("alt", "delete")
@@ -86,13 +86,22 @@
 		var form = $("<form>").attr("class", "form").append(label).append(button).on("submit", function(event) {
 			event.preventDefault();
 			var answer = $(this).find("input").val();
+			//if answer is blank, do nothing.
 			
 			console.log("input: " + answer);
 			
 			var blankItem = $("<li>")
-			blankItem.text(answer);
-			blankItem.appendTo(".lists");
-				
+			var addIconTemp = addIcon;
+			var deleteIconTemp = deleteIcon;
+			var filledItem = blankItem.text(answer).append(addIconTemp);
+			filledItem.appendTo(".listLevel1");	
+			
+			
+			/*if (!$("li").has("img")) {
+				addIcon.appendTo("li, .lists");
+				deleteIcon.appendTo("li, .lists");
+			}*/
+			
 			console.log("submission process complete");
 		});
 		
@@ -117,8 +126,8 @@
 		
 		//drawIcon(addIcon, ".lists");
 		
-		addIcon.appendTo("li, body");
-		deleteIcon.appendTo("li, body");
+		addIcon.appendTo("li, .lists");
+		deleteIcon.appendTo("li, .lists");
 		//form.appendTo(".lists");
 		
 		
