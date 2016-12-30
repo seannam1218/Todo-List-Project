@@ -18,7 +18,7 @@
 		position: fixed;
 		top:-3%;
 		left:0%;
-		z-index: 100;
+		z-parentListIndex: 100;
 		width: 100%;
 		height: 10%;
 		background-color: #8E2EC2;
@@ -53,8 +53,7 @@
 	</div>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script>
-	
+    <script>	
 		//CONSTRUCTORS
         var icon = function(alt, src, width, opacity) {
 			this.name = name;
@@ -63,12 +62,17 @@
 			this.opacity = opacity;
 		}
 		
-		var form = function() {
-			this.button = $("<button>").attr("type", "submit");
+		var form = function(parentListIndex) {
+			this.button = $("<button>").attr("type", "submit").text("submit");
 			this.input = $("<input>").attr("type", "string");
 			this.label = $("<label>").append("Add an item <br>").append(this.input);
+			this.parentListIndex = parentListIndex;
 		}
-			
+		
+		var inputAnswer;
+		var parentListIndex = 0;
+		//var mainForm;
+		//var subForm;
 			
 		//INSTANTIATION
 		var addIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 1)
@@ -78,54 +82,85 @@
 			.attr("alt", addIcon.alt)
 			.attr("width", addIcon.width) 
 			.on("click", function(event) {
-					console.log("clicked add");
+					console.log("clicked add mainlist");
 					$mainForm.appendTo(".listLevel1");
 					$mainListAddIcon.appendTo(".listLevel1");
 				}
 			);
 			
 		
-		var mainForm = new form();
+		var mainForm = new form(0);
 		var $mainForm = $("<form>").attr("class", "form").append(mainForm.label).append(mainForm.button)
 			.on("submit", function(event) {
 				event.preventDefault();
-				console.log("yay");
-				var answer = $(this).find("input").val();
-				var blankList = $("<ul>");
-				var blankItem = $("<li>");
-				var subListAddIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px") ;
-				var $subListAddIcon = $("<img>")
-					.attr("src", addIcon.src)
-					.attr("alt", addIcon.alt)
-					.attr("width", addIcon.width)
-					.attr("style", "opacity: 0.1")
-					.mouseenter(function(event) {
-						console.log("mouse over");
-						this.style.opacity = 1;
-						}
-					)
-					.mouseout(function(event) {
-						this.style.opacity = 0.1;
-						}
-					)
-					.on("click", function(event) {
-						}
-					)
-				console.log("clicked add");
-				$mainForm.appendTo(".listLevel1");
-				var filledItem = blankItem.text(answer).append($subListAddIcon, blankList);	
-				filledItem.appendTo(".listLevel1");
+				console.log("main form submitted");
+				inputAnswer = $(this).find("input").val();
+				
+				//mainListItem is created when the answer is submitted
+				makeMainListItem();			
 				
 				$mainForm.appendTo(".listLevel1");
 				$mainListAddIcon.appendTo(".listLevel1");
+				console.log("main form and icon regenerated")
 				}
-			);
+			)
+			
+			
+		//prepare a mainListItem with new icons and a blank list
+		var makeMainListItem = function(event) {
+			var blankList = $("<ul>").attr("class", parentListIndex);
+			var blankItem = $("<li>");
+			var mainListItemAddIcon = new icon("add" + parentListIndex, "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px") ;
+			var $mainListItemAddIcon = $("<img>")
+				.attr("src", addIcon.src)
+				.attr("alt", addIcon.alt)
+				.attr("width", addIcon.width)
+				.attr("style", "opacity: 0.1")
+				.mouseenter(function(event) {
+					console.log("detected mouse over mainListItem add icon");
+					this.style.opacity = 1;
+					}
+				)
+				.mouseout(function(event) {
+					this.style.opacity = 0.1;
+					}
+				)
+				.on("click", makeSubForm())
+			
+			//relocate mainForm and addIcon
+			$mainForm.appendTo(".listLevel1");
+			var mainListItem = blankItem.text(inputAnswer).append($mainListItemAddIcon, blankList);	
+			mainListItem.appendTo(".listLevel1");
+			console.log("mainList item created. index= " + parentListIndex);
+			parentListIndex ++;
+		}
+			
+			
+		var makeSubForm = function(event) {
+			console.log("clicked add mainListItem");
+			//Prepare a subForm which adds a new subListItem item (li) to the appropriate place when submitted
+			var subForm = new form(parentListIndex);
+			var $subForm = $("<form>").attr("class", "form").append(subForm.label).append(subForm.button)
+				.on("submit", makeSubListItem)
+			$subForm.appendTo("body");
+		}
+		
+		var makeSubListItem = function(event) {
+			event.preventDefault();
+			var blankItem = $("<li>")
+			console.log(this.parent());
+			var indexString = String("." + subForm.parent().parent().class);
+			console.log(indexString);
+			$(indexString).append($("<li>").text("yeee haw"));
+			
+			
+			//$subForm.appendTo("body"); when add icon is clicked
+		}
+		
+		//make an array for subforms and mainListItemButtons to keep track of their locations. Each mainListItem shud store a corresponding numb
 		
 		$mainListAddIcon.appendTo(".listLevel1");
 
-
-
-		
     </script>
 	
 </body>
