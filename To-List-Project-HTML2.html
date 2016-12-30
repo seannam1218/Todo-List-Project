@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Todo List Project</title>
+	<meta charset="utf-8">
+	
+	<style>
+	body {
+	background-color: #FAECA9
+	}
+	
+	.topBar {
+		font-family: sans-serif;
+		font-size: 1em;
+		text-align: center;
+		color: white;
+		position: fixed;
+		top:-3%;
+		left:0%;
+		z-index: 100;
+		width: 100%;
+		height: 10%;
+		background-color: #8E2EC2;
+	}
+	.lists {
+		font-family: sans-serif;
+		font-size: 1.5em;
+		top: 5%;
+		margin-left: 10%;
+		margin-right: 20%;
+		margin-top: 5%;
+	
+	}
+	.form {
+		color: #FF8000;
+		font-size: 0.5em;
+	}
+	
+	</style>
+	
+</head>
+
+
+<body>
+	<div class= topBar>
+		<h1>Sean's To-do List</h1> 
+	</div>
+	
+	<div class= lists>
+		<ul class= listLevel1> 
+		</ul>
+	</div>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+	
+		//CONSTRUCTORS
+        var icon = function(alt, src, width, opacity) {
+			this.name = name;
+			this.src = src;
+			this.width = width;
+			this.opacity = opacity;
+		}
+		
+		var form = function() {
+			this.button = $("<button>").attr("type", "submit");
+			this.input = $("<input>").attr("type", "string");
+			this.label = $("<label>").append("Add an item <br>").append(this.input);
+		}
+			
+			
+		//INSTANTIATION
+		var addIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 1)
+		
+		var $mainListAddIcon = $("<img>")
+			.attr("src", addIcon.src)
+			.attr("alt", addIcon.alt)
+			.attr("width", addIcon.width) 
+			.on("click", function(event) {
+					console.log("clicked add");
+					$mainForm.appendTo(".listLevel1");
+					$mainListAddIcon.appendTo(".listLevel1");
+				}
+			);
+			
+		
+		var mainForm = new form();
+		var $mainForm = $("<form>").attr("class", "form").append(mainForm.label).append(mainForm.button)
+			.on("submit", function(event) {
+				event.preventDefault();
+				console.log("yay");
+				var answer = $(this).find("input").val();
+				var blankList = $("<ul>");
+				var blankItem = $("<li>");
+				var subListAddIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px") ;
+				var $subListAddIcon = $("<img>")
+					.attr("src", addIcon.src)
+					.attr("alt", addIcon.alt)
+					.attr("width", addIcon.width)
+					.attr("style", "opacity: 0.1")
+					.mouseenter(function(event) {
+						console.log("mouse over");
+						this.style.opacity = 1;
+						}
+					)
+					.mouseout(function(event) {
+						this.style.opacity = 0.1;
+						}
+					)
+					.on("click", function(event) {
+						}
+					)
+				console.log("clicked add");
+				$mainForm.appendTo(".listLevel1");
+				var filledItem = blankItem.text(answer).append($subListAddIcon, blankList);	
+				filledItem.appendTo(".listLevel1");
+				
+				$mainForm.appendTo(".listLevel1");
+				$mainListAddIcon.appendTo(".listLevel1");
+				}
+			);
+		
+		$mainListAddIcon.appendTo(".listLevel1");
+
+
+
+		
+    </script>
+	
+</body>
+
+
+
+
+
+</html>

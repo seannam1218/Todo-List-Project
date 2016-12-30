@@ -25,7 +25,7 @@
 	}
 	.lists {
 		font-family: sans-serif;
-		font-size: 2em;
+		font-size: 1.5em;
 		top: 5%;
 		margin-left: 10%;
 		margin-right: 20%;
@@ -49,35 +49,33 @@
 	
 	<div class= lists>
 		<ul class= listLevel1> 
-			<li>Job
-			<ul class= listLevel2>
-				<li> get a job </li>
-				<li> update resume</li>
-			</ul>
-			</li>
-			<li>Education</li>
-			<li>Computer Science</li>
+			
 		</ul>
 	</div>
-
 	
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>
         //when user clicks + button next to each li, a form block appears where they can add a new sub-goal. 
 		//when user clicks - button next to each li, that li item is erased.
+		
 		var addIcon = $("<img>")
 			.attr("src", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png")
 			.attr("alt", "add")
 			.attr("width", "30px")
 			.on("click", function(event) {
 				console.log("wow");
-				form.appendTo("body");
-				});
-			
+				form.appendTo(".lists");
+				}
+			);
+				
 		var deleteIcon = $("<img>")
 			.attr("src", "http://image.flaticon.com/icons/png/128/61/61391.png")
 			.attr("alt", "delete")
-			.attr("width", "30px");
+			.attr("width", "30px")
+			.on("click", function(event) {
+				console.log("clicked delete");
+				}
+			);
 		
 		//form construction
 		var button = $("<button>").attr("type", "submit");
@@ -86,14 +84,54 @@
 		var form = $("<form>").attr("class", "form").append(label).append(button).on("submit", function(event) {
 			event.preventDefault();
 			var answer = $(this).find("input").val();
+			var blankList = $("<ul>");
+			var blankItem = $("<li>");
+		
+			var addIcon = $("<img>")
+				.attr("src", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png")
+				.attr("alt", "add")
+				.attr("width", "30px")
+				.attr("style", "opacity: 0.1")
+				.mouseenter(function(event) {
+						this.style.opacity = 1;
+					}
+				)
+				.mouseout(function(event) {
+						this.style.opacity = 0.1;
+					}
+				)
+				.on("click", function(event) {
+						//console.log("clicked add icon");
+						var list = $(this).parent();
+						var subList = list.find("ul");
+						
+						form.appendTo(subList);
+						//console.log(subList);
+					}
+				);
+					
+			var deleteIcon = $("<img>")
+				.attr("src", "http://image.flaticon.com/icons/png/128/61/61391.png")
+				.attr("alt", "delete")
+				.attr("width", "30px")
+				.attr("style", "opacity: 0.1")
+				.mouseenter(function(event) {
+						this.style.opacity = 1;
+					}
+				)
+				.mouseout(function(event) {
+						this.style.opacity = 0.1;
+					}
+				)
+				.on("click", function(event) {
+						console.log("clicked delete icon");
+					}
+				);
 			
-			console.log("input: " + answer);
+			console.log(this)
+			var filledItem = blankItem.text(answer).append(addIcon, deleteIcon, blankList);	
+			filledItem.appendTo(".listLevel1");	
 			
-			var blankItem = $("<li>")
-			blankItem.text(answer);
-			blankItem.appendTo(".lists");
-				
-			console.log("submission process complete");
 		});
 		
 		/*
@@ -117,8 +155,8 @@
 		
 		//drawIcon(addIcon, ".lists");
 		
-		addIcon.appendTo("li, body");
-		deleteIcon.appendTo("li, body");
+		addIcon.appendTo(".lists");
+		deleteIcon.appendTo(".lists");
 		//form.appendTo(".lists");
 		
 		
