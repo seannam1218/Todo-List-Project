@@ -40,20 +40,28 @@
 		color: #FF8000;
 		font-size: 0.5em;
 	}
+	.accessories {
+		text-align: center;
+	}
 	
 	</style>
 	
 </head>
 
 
-<body>
+<body onload = "load()">
 	<div class= topBar>
 		<h1>Sean's To-do List</h1> 
 	</div>
 	
 	<div class= lists>
-		<ul class= listLevel1> 
+		<ul class= mainList> 
 		</ul>
+	</div>
+	
+	<div class= accessories>
+		<button class= removeForms>remove forms</button>
+		<button class= save>save work</button>
 	</div>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -74,6 +82,8 @@
 			//this.parentListIndex = parentListIndex;
 		}
 		
+		var blankList = $("<ul>").attr("class", "item" + parentListIndex);
+		var blankItem = $("<li>");
 		var inputAnswer;
 		var parentListIndex = 0;
 		var $thisObject;
@@ -86,9 +96,10 @@
 			.attr("alt", addIcon.alt)
 			.attr("width", addIcon.width) 
 			.on("click", function(event) {
-					console.log("clicked mainList add icon");
-					$mainForm.appendTo(".listLevel1");
-					$mainListAddIcon.appendTo(".listLevel1");
+				event.preventDefault();
+				console.log("clicked mainList add icon");
+				$mainForm.appendTo(".mainList");
+				$mainListAddIcon.appendTo(".mainList");
 				}
 			);
 			
@@ -105,8 +116,8 @@
 				makeMainListItem();			
 				
 				//relocate mainForm and mainListAddIcon to the bottom of the list
-				$mainForm.appendTo(".listLevel1");
-				$mainListAddIcon.appendTo(".listLevel1");
+				$mainForm.appendTo(".mainList");
+				$mainListAddIcon.appendTo(".mainList");
 				}
 			)
 			
@@ -132,16 +143,17 @@
 					}
 				)
 				.on("click", function(event) {
-						$thisObject = $(this);
-						$(".subForm").remove();
-						makeSubForm();
+					event.preventDefault();
+					$thisObject = $(this);
+					$(".subForm").remove();
+					makeSubForm();
 					}
 				)
 			
 			//relocate mainForm and mainListAddIcon to the bottom of the list
-			$mainForm.appendTo(".listLevel1");
+			$mainForm.appendTo(".mainList");
 			var mainListItem = blankItem.text(inputAnswer).append($mainListItemAddIcon, blankList);	
-			mainListItem.appendTo(".listLevel1");
+			mainListItem.appendTo(".mainList");
 			console.log("mainList item created. class name= " + blankList.attr("class"));
 			parentListIndex ++;
 		}
@@ -153,44 +165,63 @@
 			//Prepare a subForm which adds a new subListItem item (li) to the appropriate place when submitted
 			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
 			console.log("subForm index = " + index);
-			//var subForm = new form(index);
 			var subForm = new form();
 			var $subForm = $("<form>").attr("class", "subForm").append(subForm.label).append(subForm.button)
 				.on("submit", function(event) {
-						inputAnswer = $(this).find("input").val();
-						makeSubListItem();
-					}
-				)
-				.on("focusout", function(event) {
-						$(".subForm").remove();
+					event.preventDefault();
+					inputAnswer = $(this).find("input").val();
+					makeSubListItem();
 					}
 				)
 			console.log("subform generated: ") 
 			console.log($subForm);
 			
 			var indexString = String(".item" + index);
-			console.log(indexString);
 			$subForm.appendTo($(indexString));	
 		}
 		
 		var makeSubListItem = function(event) {
-			event.preventDefault();
-			
 			var blankItem = $("<li>");
-			console.log(this);
 			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
 			var indexString = String(".item" + index);
-			console.log(indexString);
-			$(indexString).append($("<li>").text("yeee haw"));
-			var subListItem = blankItem.text(inputAnswer).append($mainListItemAddIcon, blankList);	
-
-			
-			//$subForm.appendTo("body"); when add icon is clicked
+			console.log("created subListItem: " + indexString);
+			var subListItem = blankItem.text(inputAnswer);
+			$(indexString).append($("<li>").html(subListItem));	
 		}
 		
-		//make an array for subforms and mainListItemButtons to keep track of their locations. Each mainListItem shud store a corresponding numb
+		//MAIN CODE
+		$mainListAddIcon.appendTo(".mainList");
 		
-		$mainListAddIcon.appendTo(".listLevel1");
+		$(".removeForms").on("click", function(event) {
+			event.preventDefault();
+			$(".subForm").remove();
+			$(".form").remove();
+			console.log("removed forms");
+			}
+		)
+		
+		$(".save").on("click", function(event) {
+			event.preventDefault();
+			//$(".subForm").remove();
+			//$(".form").remove();
+			var fieldValue = "wowomg"//$("body").html;
+			console.log(fieldValue);
+			localStorage.setItem("everything", fieldValue);
+			//console.log(localStorage);
+			console.log("saved work");
+			}
+		)
+		
+		var load = function() {
+			console.log("attempting load....")
+			if (storedValue) {
+				var storedValue = localStorage.getItem("everything");
+				$("body").html = storedValue;
+				console.log("found file. load successful");
+				return;
+			}
+			console.log("nothing is in storage");
+		}
 
     </script>
 	
