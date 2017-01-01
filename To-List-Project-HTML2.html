@@ -55,11 +55,12 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script>	
 		//CONSTRUCTORS
-        var icon = function(alt, src, width, opacity) {
-			this.name = name;
+        var icon = function(alt, src, width, opacity, parentListIndex) {
+			this.alt = alt;
 			this.src = src;
 			this.width = width;
 			this.opacity = opacity;
+			this.parentListIndex = parentListIndex;
 		}
 		
 		var form = function(parentListIndex) {
@@ -71,18 +72,17 @@
 		
 		var inputAnswer;
 		var parentListIndex = 0;
-		//var mainForm;
-		//var subForm;
+		var $thisObject;
 			
 		//INSTANTIATION
-		var addIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 1)
+		var addIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 1, null)
 		
 		var $mainListAddIcon = $("<img>")
 			.attr("src", addIcon.src)
 			.attr("alt", addIcon.alt)
 			.attr("width", addIcon.width) 
 			.on("click", function(event) {
-					console.log("clicked add mainlist");
+					console.log("clicked mainList add icon");
 					$mainForm.appendTo(".listLevel1");
 					$mainListAddIcon.appendTo(".listLevel1");
 				}
@@ -99,25 +99,26 @@
 				//mainListItem is created when the answer is submitted
 				makeMainListItem();			
 				
+				//relocate mainForm and mainListAddIcon to the bottom of the list
 				$mainForm.appendTo(".listLevel1");
 				$mainListAddIcon.appendTo(".listLevel1");
-				console.log("main form and icon regenerated")
 				}
 			)
 			
 			
 		//prepare a mainListItem with new icons and a blank list
 		var makeMainListItem = function(event) {
-			var blankList = $("<ul>").attr("class", parentListIndex);
+			var blankList = $("<ul>").attr("class", "item" + parentListIndex);
 			var blankItem = $("<li>");
-			var mainListItemAddIcon = new icon("add" + parentListIndex, "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px") ;
+			var mainListItemAddIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 0.1, parentListIndex) ;
 			var $mainListItemAddIcon = $("<img>")
-				.attr("src", addIcon.src)
-				.attr("alt", addIcon.alt)
-				.attr("width", addIcon.width)
+				.attr("class", "addIcon" + mainListItemAddIcon.parentListIndex)
+				.attr("src", mainListItemAddIcon.src)
+				.attr("alt", mainListItemAddIcon.alt)
+				.attr("width", mainListItemAddIcon.width)
 				.attr("style", "opacity: 0.1")
 				.mouseenter(function(event) {
-					console.log("detected mouse over mainListItem add icon");
+					console.log("detected mouse over mainListItemAddIcon " + $mainListItemAddIcon.attr("class"));
 					this.style.opacity = 1;
 					}
 				)
@@ -125,31 +126,47 @@
 					this.style.opacity = 0.1;
 					}
 				)
-				.on("click", makeSubForm())
+				.on("click", function(event) {
+						$thisObject = $(this);
+						makeSubForm();
+					}
+				)
 			
-			//relocate mainForm and addIcon
+			//relocate mainForm and mainListAddIcon to the bottom of the list
 			$mainForm.appendTo(".listLevel1");
 			var mainListItem = blankItem.text(inputAnswer).append($mainListItemAddIcon, blankList);	
 			mainListItem.appendTo(".listLevel1");
-			console.log("mainList item created. index= " + parentListIndex);
+			console.log("mainList item created. class name= " + blankList.attr("class"));
 			parentListIndex ++;
 		}
 			
-			
+		//When mainListItemAddIcon is clicked, append subForm to corresponding mainListItem .
 		var makeSubForm = function(event) {
-			console.log("clicked add mainListItem");
+			console.log("clicked add sub list item");
+			
 			//Prepare a subForm which adds a new subListItem item (li) to the appropriate place when submitted
-			var subForm = new form(parentListIndex);
-			var $subForm = $("<form>").attr("class", "form").append(subForm.label).append(subForm.button)
-				.on("submit", makeSubListItem)
-			$subForm.appendTo("body");
+			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
+			console.log("subForm index = " + index);
+			var subForm = new form((index));
+			var $subForm = $("<form>").attr("class", "subForm" + index).append(subForm.label).append(subForm.button)
+				.on("submit", function(event) {
+						makeSubListItem();
+					}
+				)
+			console.log("subform generated: ") 
+			console.log($subForm);
+			
+			var indexString = String(".item" + index);
+			console.log(indexString);
+			$subForm.appendTo($(indexString));	
 		}
 		
 		var makeSubListItem = function(event) {
 			event.preventDefault();
-			var blankItem = $("<li>")
-			console.log(this.parent());
-			var indexString = String("." + subForm.parent().parent().class);
+			
+			var blankItem = $("<li>");
+			console.log(this);
+			var indexString = String("." + (parentListIndex-1));
 			console.log(indexString);
 			$(indexString).append($("<li>").text("yeee haw"));
 			
