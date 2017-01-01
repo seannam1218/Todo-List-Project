@@ -36,6 +36,10 @@
 		color: #FF8000;
 		font-size: 0.5em;
 	}
+	.subForm {
+		color: #FF8000;
+		font-size: 0.5em;
+	}
 	
 	</style>
 	
@@ -63,11 +67,11 @@
 			this.parentListIndex = parentListIndex;
 		}
 		
-		var form = function(parentListIndex) {
+		var form = function() {
 			this.button = $("<button>").attr("type", "submit").text("submit");
 			this.input = $("<input>").attr("type", "string");
 			this.label = $("<label>").append("Add an item <br>").append(this.input);
-			this.parentListIndex = parentListIndex;
+			//this.parentListIndex = parentListIndex;
 		}
 		
 		var inputAnswer;
@@ -89,7 +93,8 @@
 			);
 			
 		
-		var mainForm = new form(0);
+		//var mainForm = new form(0);
+		var mainForm = new form();
 		var $mainForm = $("<form>").attr("class", "form").append(mainForm.label).append(mainForm.button)
 			.on("submit", function(event) {
 				event.preventDefault();
@@ -128,6 +133,7 @@
 				)
 				.on("click", function(event) {
 						$thisObject = $(this);
+						$(".subForm").remove();
 						makeSubForm();
 					}
 				)
@@ -147,10 +153,16 @@
 			//Prepare a subForm which adds a new subListItem item (li) to the appropriate place when submitted
 			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
 			console.log("subForm index = " + index);
-			var subForm = new form((index));
-			var $subForm = $("<form>").attr("class", "subForm" + index).append(subForm.label).append(subForm.button)
+			//var subForm = new form(index);
+			var subForm = new form();
+			var $subForm = $("<form>").attr("class", "subForm").append(subForm.label).append(subForm.button)
 				.on("submit", function(event) {
+						inputAnswer = $(this).find("input").val();
 						makeSubListItem();
+					}
+				)
+				.on("focusout", function(event) {
+						$(".subForm").remove();
 					}
 				)
 			console.log("subform generated: ") 
@@ -166,10 +178,12 @@
 			
 			var blankItem = $("<li>");
 			console.log(this);
-			var indexString = String("." + (parentListIndex-1));
+			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
+			var indexString = String(".item" + index);
 			console.log(indexString);
 			$(indexString).append($("<li>").text("yeee haw"));
-			
+			var subListItem = blankItem.text(inputAnswer).append($mainListItemAddIcon, blankList);	
+
 			
 			//$subForm.appendTo("body"); when add icon is clicked
 		}
