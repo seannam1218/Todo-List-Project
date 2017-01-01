@@ -202,21 +202,19 @@
 		
 		$(".save").on("click", function(event) {
 			event.preventDefault();
-			//$(".subForm").remove();
-			//$(".form").remove();
-			var fieldValue = "wowomg"//$("body").html;
+			
+			var fieldValue = $(".lists").html();
 			console.log(fieldValue);
 			localStorage.setItem("everything", fieldValue);
-			//console.log(localStorage);
 			console.log("saved work");
 			}
 		)
 		
 		var load = function() {
 			console.log("attempting load....")
+			var storedValue = localStorage.getItem("everything");
 			if (storedValue) {
-				var storedValue = localStorage.getItem("everything");
-				$("body").html = storedValue;
+				$(".lists").html(storedValue);
 				console.log("found file. load successful");
 				return;
 			}
