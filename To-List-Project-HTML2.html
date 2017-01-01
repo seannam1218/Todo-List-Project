@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<title>Todo List Project</title>
+	<meta charset="utf-8">
+	
+	<style>
+	body {
+	background-color: #FAECA9
+	}
+	
+	.topBar {
+		font-family: sans-serif;
+		font-size: 1em;
+		text-align: center;
+		color: white;
+		position: fixed;
+		top:-3%;
+		left:0%;
+		z-parentListIndex: 100;
+		width: 100%;
+		height: 10%;
+		background-color: #8E2EC2;
+	}
+	.lists {
+		font-family: sans-serif;
+		font-size: 1.5em;
+		top: 5%;
+		margin-left: 10%;
+		margin-right: 20%;
+		margin-top: 5%;
+	
+	}
+	.form {
+		color: #FF8000;
+		font-size: 0.5em;
+	}
+	.subForm {
+		color: #FF8000;
+		font-size: 0.5em;
+	}
+	.accessories {
+		text-align: center;
+	}
+	
+	</style>
+	
+</head>
+
+
+<body onload = "load()">
+	<div class= topBar>
+		<h1>Sean's To-do List</h1> 
+	</div>
+	
+	<div class= lists>
+		<ul class= mainList> 
+		</ul>
+	</div>
+	
+	<div class= accessories>
+		<button class= removeForms>remove forms</button>
+		<button class= save>save work</button>
+	</div>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>	
+		//CONSTRUCTORS
+        var icon = function(alt, src, width, opacity, parentListIndex) {
+			this.alt = alt;
+			this.src = src;
+			this.width = width;
+			this.opacity = opacity;
+			this.parentListIndex = parentListIndex;
+		}
+		
+		var form = function() {
+			this.button = $("<button>").attr("type", "submit").text("submit");
+			this.input = $("<input>").attr("type", "string");
+			this.label = $("<label>").append("Add an item <br>").append(this.input);
+			//this.parentListIndex = parentListIndex;
+		}
+		
+		var blankList = $("<ul>").attr("class", "item" + parentListIndex);
+		var blankItem = $("<li>");
+		var inputAnswer;
+		var parentListIndex = 0;
+		var $thisObject;
+			
+		//INSTANTIATION
+		var addIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 1, null)
+		
+		var $mainListAddIcon = $("<img>")
+			.attr("src", addIcon.src)
+			.attr("alt", addIcon.alt)
+			.attr("width", addIcon.width) 
+			.on("click", function(event) {
+				event.preventDefault();
+				console.log("clicked mainList add icon");
+				$mainForm.appendTo(".mainList");
+				$mainListAddIcon.appendTo(".mainList");
+				}
+			);
+			
+		
+		//var mainForm = new form(0);
+		var mainForm = new form();
+		var $mainForm = $("<form>").attr("class", "form").append(mainForm.label).append(mainForm.button)
+			.on("submit", function(event) {
+				event.preventDefault();
+				console.log("main form submitted");
+				inputAnswer = $(this).find("input").val();
+				
+				//mainListItem is created when the answer is submitted
+				makeMainListItem();			
+				
+				//relocate mainForm and mainListAddIcon to the bottom of the list
+				$mainForm.appendTo(".mainList");
+				$mainListAddIcon.appendTo(".mainList");
+				}
+			)
+			
+			
+		//prepare a mainListItem with new icons and a blank list
+		var makeMainListItem = function(event) {
+			var blankList = $("<ul>").attr("class", "item" + parentListIndex);
+			var blankItem = $("<li>");
+			var mainListItemAddIcon = new icon("add", "https://cdn0.iconfinder.com/data/icons/small-n-flat/24/678092-sign-add-128.png", "30px", 0.1, parentListIndex) ;
+			var $mainListItemAddIcon = $("<img>")
+				.attr("class", "addIcon" + mainListItemAddIcon.parentListIndex)
+				.attr("src", mainListItemAddIcon.src)
+				.attr("alt", mainListItemAddIcon.alt)
+				.attr("width", mainListItemAddIcon.width)
+				.attr("style", "opacity: 0.1")
+				.mouseenter(function(event) {
+					console.log("detected mouse over mainListItemAddIcon " + $mainListItemAddIcon.attr("class"));
+					this.style.opacity = 1;
+					}
+				)
+				.mouseout(function(event) {
+					this.style.opacity = 0.1;
+					}
+				)
+				.on("click", function(event) {
+					event.preventDefault();
+					$thisObject = $(this);
+					$(".subForm").remove();
+					makeSubForm();
+					}
+				)
+			
+			//relocate mainForm and mainListAddIcon to the bottom of the list
+			$mainForm.appendTo(".mainList");
+			var mainListItem = blankItem.text(inputAnswer).append($mainListItemAddIcon, blankList);	
+			mainListItem.appendTo(".mainList");
+			console.log("mainList item created. class name= " + blankList.attr("class"));
+			parentListIndex ++;
+		}
+			
+		//When mainListItemAddIcon is clicked, append subForm to corresponding mainListItem .
+		var makeSubForm = function(event) {
+			console.log("clicked add sub list item");
+			
+			//Prepare a subForm which adds a new subListItem item (li) to the appropriate place when submitted
+			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
+			console.log("subForm index = " + index);
+			var subForm = new form();
+			var $subForm = $("<form>").attr("class", "subForm").append(subForm.label).append(subForm.button)
+				.on("submit", function(event) {
+					event.preventDefault();
+					inputAnswer = $(this).find("input").val();
+					makeSubListItem();
+					}
+				)
+			console.log("subform generated: ") 
+			console.log($subForm);
+			
+			var indexString = String(".item" + index);
+			$subForm.appendTo($(indexString));	
+		}
+		
+		var makeSubListItem = function(event) {
+			var blankItem = $("<li>");
+			var index = $thisObject.attr("class").substr($thisObject.attr("class").length - 1);
+			var indexString = String(".item" + index);
+			console.log("created subListItem: " + indexString);
+			var subListItem = blankItem.text(inputAnswer);
+			$(indexString).append($("<li>").html(subListItem));	
+		}
+		
+		//MAIN CODE
+		$mainListAddIcon.appendTo(".mainList");
+		
+		$(".removeForms").on("click", function(event) {
+			event.preventDefault();
+			$(".subForm").remove();
+			$(".form").remove();
+			console.log("removed forms");
+			}
+		)
+		
+		$(".save").on("click", function(event) {
+			event.preventDefault();
+			
+			var fieldValue = $(".lists").html();
+			console.log(fieldValue);
+			localStorage.setItem("everything", fieldValue);
+			console.log("saved work");
+			}
+		)
+		
+		var load = function() {
+			console.log("attempting load....")
+			var storedValue = localStorage.getItem("everything");
+			if (storedValue) {
+				$(".lists").html(storedValue);
+				console.log("found file. load successful");
+				return;
+			}
+			console.log("nothing is in storage");
+		}
+
+    </script>
+	
+</body>
+
+
+
+
+
+</html>
