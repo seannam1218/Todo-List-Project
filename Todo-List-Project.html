@@ -4,13 +4,60 @@
 <head>
 	<title>Todo List Project</title>
 	<meta charset="utf-8">
-	<link href="Todo.css" rel="stylesheet">
+	<style>
+    body {
+        font-family: sans-serif;
+        background-color: #FAECA9;
+        padding: 0%;
+        margin: 0%;
+    }
+
+    .top-bar {
+        font-size: 1em;
+        text-align: center;
+        color: white;
+        width: 100%;
+        background-color: #8E2EC2;
+    }
+    .list {
+        font-size: 1.5em;
+        margin-left: 20%;
+        margin-right: 20%;
+    }
+    .accessories {
+        text-align: center;
+    }
+    .dialog {
+        color: blue;
+        text-align: center;
+    }
+    img {
+        width: 30px;
+        opacity: 0.1;
+    }
+    img:hover {
+        opacity: 1;
+    }
+	.status0 {
+		color: black
+	}
+	.status1 {
+		color: purple
+	}
+	.status2 {
+		color: green
+	}
+	.status3 {
+		color: red
+	}
+	
+	</style>
 	
 </head>
 
 
 <body>
-	<div class= topBar>
+	<div class= top-bar>
 		<h1>Sean's Todo List</h1> 
 	</div>
 	
@@ -18,9 +65,9 @@
 	</div>
 	
 	<div class= accessories>
-		<div class = formSpace></div>
-		<button class= deleteAll>delete all</button>
-		<button class= saveAll>save work</button>
+		<div class = form-space></div>
+		<button class= delete-all>delete all</button>
+		<button class= save-all>save work</button>
 	</div>
 
 	<br>
@@ -28,6 +75,167 @@
 	<div class= dialog></div>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-    <script src="Todo.js" type="text/javascript"></script>
+    <script>
+	
+        //DEFINITIONS
+        var bullet = "- ";
+
+        var button = $("<button>").attr("type", "submit").text("submit");
+        var input = $("<input>").attr("type", "string");
+        var label = $("<label>").append("Add an item <br>").append(this.input);
+
+        var Icon = function(index, alt, src) {
+            this.index = index;
+			this.alt = alt;
+            this.src = src;
+        }
+		
+		var deleteIconAlt = "delete item";
+        var deleteIconSrc = "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_delete_48px-128.png";
+		
+		var statusIconAlt = ["pending", "started", "finished", "stopped"];
+		var statusIconSrc = [
+			"https://d30y9cdsu7xlg0.cloudfront.net/png/99630-200.png",   //pending
+			"https://d30y9cdsu7xlg0.cloudfront.net/png/215093-200.png",	//started
+			"https://d30y9cdsu7xlg0.cloudfront.net/png/13118-200.png",	//finished
+			"https://cdn2.iconfinder.com/data/icons/player-rounded-set/154/player-stop-frame-video-music-256.png" //stopped
+		];
+		var statusColor = ["black", "purple", "green", "red"];
+		var statusIndex = 0;
+
+        //LOAD DATA// make items array corresponding to what is stored in localStorage
+        var savedData = JSON.parse(localStorage.getItem("items"));
+        
+		if (!savedData) {
+            var items = [];
+        } else {
+            var items = savedData;
+            for (var i = 0; i < savedData.length; i++) {
+                var $p = $("<p>")
+				
+				var statusIcon = new Icon(0, statusIconAlt[0], statusIconSrc[0]);
+				var $statusIcon = $("<img>")
+					.attr("class", "status" + statusIcon.index)
+                    .attr("src", statusIcon.src)
+                    .attr("alt", statusIcon.alt)
+					.on("click", function(event) {
+                        event.preventDefault();
+						console.log("clicked");
+						if (statusIcon.index == 3) {
+							statusIcon.index = 0;			
+						} else {
+							statusIcon.index ++;
+						}
+						console.log("curr index: " + statusIcon.index);
+						//this.attr("alt") = statusIconAlt[statusIcon.index];
+						//this.attr("src") = statusIconSrc[statusIcon.index];
+						//$statusIcon = $("<img>").attr("src", statusIcon.src).attr("alt", statusIcon.alt);
+						var $target = $(event.currentTarget);
+						var $targetP = $(event.currentTarget).closest("p");
+						$target.attr("src", statusIconSrc[statusIcon.index]).attr("alt", statusIconAlt[statusIcon.index]);
+						$targetP.attr("class", "status" + statusIcon.index);
+						console.log($targetP.attr("class"));
+                    });
+					console.log($statusIcon.attr("class"));
+				
+                var deleteIcon = new Icon(0, deleteIconAlt, deleteIconSrc);
+                var $deleteIcon = $("<img>")
+					.attr("class", "deleteIcon")
+                    .attr("src", deleteIcon.src)
+                    .attr("alt", deleteIcon.alt)
+                    .on("click", function(event) {
+                        event.preventDefault();
+                        var $target = $(event.currentTarget).closest("p");
+                        $target.remove();
+                    });
+                var $answerP = $p.append($statusIcon).append(items[i]).append($deleteIcon).append($("<br>"));
+                $(".list").append($answerP);
+            }
+        }
+
+        var $mainForm = $("<form>").attr("class", "main-form").append(label).append(button).attr("input", input)
+            .on("submit", function(event) {
+                event.preventDefault();
+                $(".dialog").text("");
+                var inputAnswer = $(this).find("input").val();
+                if (inputAnswer !== "") {
+					var statusIcon = new Icon(statusIndex, statusIconAlt[statusIndex], statusIconSrc[statusIndex]);
+					var $statusIcon = $("<img>")
+						.attr("class", "status" + statusIcon.index)
+						.attr("src", statusIcon.src)
+						.attr("alt", statusIcon.alt)
+						.on("click", function(event) {
+							event.preventDefault();
+							console.log("clicked");
+							if (statusIcon.index == 3) {
+								statusIcon.index = 0;			
+							} else {
+								statusIcon.index ++;
+							}
+							console.log("curr index: " + statusIcon.index);
+							$statusIcon = $("<img>").attr("src", statusIcon.src).attr("alt", statusIcon.alt);
+							var $target = $(event.currentTarget);
+							var $targetP = $(event.currentTarget).closest("p");
+							$target.attr("src", statusIcon.src).attr("alt", statusIcon.alt);
+							$targetP.attr("class", "status" + statusIcon.index);
+							console.log($targetP.attr("class"));
+						});
+                    var deleteIcon = new Icon(0, deleteIconAlt, deleteIconSrc);
+                    var $deleteIcon = $("<img>")
+						.attr("class", "deleteIcon")
+                        .attr("src", deleteIcon.src)
+                        .attr("alt", deleteIcon.alt)
+                        .on("click", function(event) {
+                            event.preventDefault();
+                            var $target = $(event.currentTarget).closest("p");
+                            $target.remove();
+                            }
+                        )
+                    if (items === null) {
+                        var $p = $("<p>")
+                    } else {
+                        var $p = $("<p>")
+                    }
+                    var $answerP = $p.append($statusIcon).append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
+                    $(".list").append($answerP);
+                }
+            });
+
+        $(".save-all").on("click", function(event) {
+            event.preventDefault();
+            items = [];
+            $("p").each(function(index, element) {
+                var text = $(element).text();
+                items.push(text);
+                }
+            );
+            localStorage.setItem("items", JSON.stringify(items));
+        });
+
+        $(".delete-all").on("click", function(event) {
+            event.preventDefault();
+            //dialog pop-up
+            if ($(".dialog").text() === "") {
+                var yesButton = $("<button>").attr("type", "submit").text("hell yeah")
+                    .on("click", function(event) {
+                        items = [];
+                        $(".list").html("");
+                        $(".dialog").html("");
+                        }
+                    )
+                var noButton = $("<button>").attr("type", "submit").text("nah")
+                    .on("click", function(event) {
+                        $(".dialog").html("");
+                        return;
+                        }
+                    )
+                $(".dialog").append("Are you sure you want to delete everything?").append("<br>").append(yesButton).append(noButton);
+            }
+        });
+
+        //MAIN CODE//
+        $mainForm.appendTo($(".form-space"));
+
+	</script>
 	
 </body>
