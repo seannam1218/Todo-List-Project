@@ -1,4 +1,3 @@
-
     body {
         font-family: sans-serif;
         background-color: #FAECA9;
@@ -29,6 +28,22 @@
         width: 30px;
         opacity: 0.1;
     }
-    .deleteIcon:hover {
+    img:hover {
         opacity: 1;
     }
+	.status0 {
+		color: black
+	}
+	.status1 {
+		color: purple
+	}
+	.status2 {
+		color: green
+	}
+	.status3 {
+		color: red
+	}
+	.display {
+		opacity: 1;
+	}
+	
