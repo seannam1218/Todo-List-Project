@@ -26,7 +26,7 @@
         //LOAD DATA// make items array corresponding to what is stored in localStorage
         var load = function() {
 			var savedTexts = JSON.parse(localStorage.getItem("items"));
-			var savedIconClasses = JSON.parse(localStorage.getItem("iconClasses"))
+			var savedIconClasses = JSON.parse(localStorage.getItem("iconClasses"));
         
 			if (!savedTexts) {
 				var items = [];
@@ -35,45 +35,34 @@
 				var items = savedTexts;
 				var iconClasses = savedIconClasses;
 				for (var i = 0; i < savedTexts.length; i++) {
-					var $p = $("<p>")
-					var index = iconClasses[i].substr(-1);
-					
+					var statusIndex = iconClasses[i].substr(-1);
+					var $p = $("<p>").attr("class", "status" + statusIndex);
 					var $statusIcon = $("<img>")
 						.attr("class", iconClasses[i])
-						.attr("src", statusIconSrc[index])
-						.attr("alt", statusIconAlt[index])
+						.attr("src", statusIconSrc[statusIndex])
+						.attr("alt", statusIconAlt[statusIndex])
 						.on("click", function(event) {
 							event.preventDefault();
 							var $target = $(event.currentTarget);
 							var $targetP = $(event.currentTarget).closest("p");
+							console.log($targetP);
+							var index = $targetP.attr("class").substr(-1);
 							console.log("clicked");
-							
-							if ($target.attr("class") == "status0") {
-								$target.removeClass("status0")
-									.attr("class", "status1")
-									.attr("src", statusIconSrc[1])
-									.attr("alt", statusIconAlt[1]);
-								$targetP.attr("class", "status1");
-							} else if ($target.attr("class") == "status1") {
-								$target.removeClass("status1")
-									.attr("class", "status2")
-									.attr("src", statusIconSrc[2])
-									.attr("alt", statusIconAlt[2]);	
-								$targetP.attr("class", "status2");
-							} else if ($target.attr("class") == "status2") {
-								$target.removeClass("status2")
-									.attr("class", "status3")
-									.attr("src", statusIconSrc[3])
-									.attr("alt", statusIconAlt[3]);	
-								$targetP.attr("class", "status3");
-							} else if ($target.attr("class") == "status3") {
-								$target.removeClass("status3")
-									.attr("class", "status0")
-									.attr("src", statusIconSrc[0])
-									.attr("alt", statusIconAlt[0]);		
+							if ($targetP.attr("class") == "status3") {
+								index = 0;
+								$targetP.removeClass("status3");
 								$targetP.attr("class", "status0");
+								$target.attr("src", statusIconSrc[index])
+									.attr("alt", statusIconAlt[index]);		
+								
+							} else {
+								$targetP.removeClass("status" + index)
+								index ++;
+								$targetP.attr("class", "status" + index);
+								$target.attr("src", statusIconSrc[index])
+									.attr("alt", statusIconAlt[index]);
 							}
-				 
+					
 							console.log($targetP.attr("class"));
 						});
 					
@@ -91,11 +80,10 @@
 				}
 			}
 		}
-		
-		
 
         var $mainForm = $("<form>").attr("class", "main-form").append(label).append(button).attr("input", input)
             .on("submit", function(event) {
+				var $p = $("<p>").attr("class", "status0")
                 event.preventDefault();
                 $(".dialog").text("");
                 var inputAnswer = $(this).find("input").val();
@@ -105,38 +93,29 @@
                     .attr("src", statusIconSrc[0])
                     .attr("alt", statusIconAlt[0])
 					.on("click", function(event) {
-                        event.preventDefault();
+						event.preventDefault();
 						var $target = $(event.currentTarget);
 						var $targetP = $(event.currentTarget).closest("p");
+						console.log($targetP);
+						var index = $targetP.attr("class").substr(-1);
 						console.log("clicked");
-						if ($target.attr("class") == "status0") {
-							$target.removeClass("status0")
-								.attr("class", "status1")
-								.attr("src", statusIconSrc[1])
-								.attr("alt", statusIconAlt[1]);
-							$targetP.attr("class", "status1");
-						} else if ($target.attr("class") == "status1") {
-							$target.removeClass("status1")
-								.attr("class", "status2")
-								.attr("src", statusIconSrc[2])
-								.attr("alt", statusIconAlt[2]);	
-							$targetP.attr("class", "status2");
-						} else if ($target.attr("class") == "status2") {
-							$target.removeClass("status2")
-								.attr("class", "status3")
-								.attr("src", statusIconSrc[3])
-								.attr("alt", statusIconAlt[3]);	
-							$targetP.attr("class", "status3");
-						} else if ($target.attr("class") == "status3") {
-							$target.removeClass("status3")
-								.attr("class", "status0")
-								.attr("src", statusIconSrc[0])
-								.attr("alt", statusIconAlt[0]);		
+						
+						if ($targetP.attr("class") == "status3") {
+							index = 0;
+							$targetP.removeClass("status3")
 							$targetP.attr("class", "status0");
+							$target.attr("src", statusIconSrc[index])
+								.attr("alt", statusIconAlt[index]);		
+						} else {
+							$targetP.removeClass("status" + index)
+							index ++;
+							$targetP.attr("class", "status" + index);
+							$target.attr("src", statusIconSrc[index])
+								.attr("alt", statusIconAlt[index]);
 						}
-						 
+						
 						console.log($targetP.attr("class"));
-                    });
+					});
 					           
                     var $deleteIcon = $("<img>")
 						.attr("class", "deleteIcon")
@@ -149,7 +128,7 @@
                             }
                         )
                     
-                    var $answerP = $("<p>").append($statusIcon).append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
+                    var $answerP = $p.append($statusIcon).append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
                     $(".list").append($answerP);
                 }
             });
