@@ -54,7 +54,6 @@
             if (!iconClasses || iconClasses.length == 0) {
                 return
             } else {
-				console.log(iconClasses)
                 statusIndex = iconClasses[i].substr(-1);
                 $p = $("<p>").attr("class", "status" + statusIndex);
                 $statusIcon = $("<img>")
@@ -102,12 +101,9 @@
             if (!savedTexts || savedTexts.length == 0) {
                 items = [];
                 iconClasses = [];
-                console.log("no saved files found")
             } else {
-                console.log("loading saved files")
                 items = savedTexts;
                 iconClasses = savedIconClasses;
-                console.log(iconClasses);
 
                 for (var i = 0; i < items.length; i++) {
                     createStatusIcon(i)
@@ -225,7 +221,6 @@
                         var temp = items[i+1];
                         items[i+1] = items[i];
                         items[i] = temp;
-                        console.log("swapping complete")
 
                         reorder();
                     }
