@@ -1,18 +1,34 @@
 
         //DEFINITIONS
-        var bullet = "- ";
-
+        var bullet = " - ";
+		var space = "  ";
         var button = $("<button>").attr("type", "submit").text("submit");
         var input = $("<input>").attr("type", "string");
         var label = $("<label>").append("Add an item <br>").append(this.input);
 
-        var Icon = function(alt, src) {
-            this.alt = alt;
-            this.src = src;
+		var $editIcon;
+        var createEditIcon = function() {
+            $editIcon = $("<img>")
+                .attr("class", "editIcon")
+                .attr("src", editIconSrc)
+                .attr("alt", editIconAlt)
+                .on("click", function(event) {
+                    event.preventDefault();
+					var $target = $(event.currentTarget)
+                    var $targetP = $(event.currentTarget).parent().find(".itemText");
+					$targetP.attr("style", "background-color: white");
+                    $targetP.attr("contenteditable", "true");
+					$targetP.on("focusout", function(e) {
+						$targetP.attr("style", "background-color: none");
+						$targetP.attr("contenteditable", "false");
+					});
+                });
         }
 
+        var editIconAlt = "edit item";
+        var editIconSrc = "https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_mode_edit_48px-128.png";
+		
         var $deleteIcon;
-
         var createDeleteIcon = function() {
             $deleteIcon = $("<img>")
                 .attr("class", "deleteIcon")
@@ -20,8 +36,8 @@
                 .attr("alt", deleteIconAlt)
                 .on("click", function(event) {
                     event.preventDefault();
-                    var $target = $(event.currentTarget).closest("p");
-                    $target.remove();
+					var $targetP = $(event.currentTarget).closest("p");
+                    $targetP.remove();
                 });
 
         }
@@ -34,7 +50,6 @@
         var iconClasses = [];
         var $p;
         var statusIndex;
-
         var createStatusIcon = function(i) {
             if (!iconClasses || iconClasses.length == 0) {
                 return
@@ -96,14 +111,10 @@
 
                 for (var i = 0; i < items.length; i++) {
                     createStatusIcon(i)
+					createEditIcon();
                     createDeleteIcon();
-
-                    console.log($statusIcon)
-                    console.log(items[i])
-                    console.log($deleteIcon)
-                    console.log($p)
-
-                    var $answerP = $p.append($statusIcon).append(items[i]).append($deleteIcon).append($("<br>"));
+					var itemSpan = $("<span>").attr("class", "itemText").append(items[i])
+                    var $answerP = $p.append($statusIcon).append(itemSpan).append(space).append($editIcon).append($deleteIcon).append($("<br>"));
                     $(".list").append($answerP);
                 }
 
@@ -115,7 +126,7 @@
                 var $p = $("<p>").attr("class", "status0")
                 event.preventDefault();
                 $(".dialog").text("");
-                var inputAnswer = $(this).find("input").val();
+                var inputAnswer = $("<span>").attr("class", "itemText").append(bullet).append($(this).find("input").val());
                 if (inputAnswer !== "") {
                     var $statusIcon = $("<img>")
                     .attr("class", "status0")
@@ -143,9 +154,10 @@
 
                     });
 
+					createEditIcon();
                     createDeleteIcon();
 
-                    var $answerP = $p.append($statusIcon).append(bullet).append(inputAnswer).append($deleteIcon).append($("<br>"))
+                    var $answerP = $p.append($statusIcon).append(inputAnswer).append(space).append($editIcon).append($deleteIcon).append($("<br>"))
                     $(".list").append($answerP);
                 }
             });
@@ -225,9 +237,10 @@
 
             for (var i = 0; i < items.length; i++) {
                 createStatusIcon(i)
+				createEditIcon();
                 createDeleteIcon();
-
-                var $answerP = $p.append($statusIcon).append(items[i]).append($deleteIcon).append($("<br>"));
+				var itemSpan = $("<span>").attr("class", "itemText").append(items[i])
+                var $answerP = $p.append($statusIcon).append(itemSpan).append(space).append($editIcon).append($deleteIcon).append($("<br>"));
                 $(".list").append($answerP);
             }
         })
